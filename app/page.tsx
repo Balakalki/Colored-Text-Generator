@@ -57,7 +57,7 @@ export default function DiscordTextGenerator() {
   const [copyMessage, setCopyMessage] = useState("Copy text as Discord formatted")
   const [copyCount, setCopyCount] = useState(0)
 
-  // Function to apply ANSI style to selected text
+  // Replace the applyStyle function with this improved version that preserves existing styles
   const applyStyle = (ansiCode: string) => {
     if (!textareaRef.current) return
 
@@ -76,9 +76,50 @@ export default function DiscordTextGenerator() {
     const selectedText = selection.toString()
 
     if (selectedText) {
+      // Check if selection is inside a span with existing ANSI classes
+      let existingClasses: string[] = []
+      let parentNode = range.commonAncestorContainer
+
+      // If the selection is just text, get its parent
+      if (parentNode.nodeType === Node.TEXT_NODE) {
+        parentNode = parentNode.parentNode
+      }
+
+      // Collect existing ANSI classes if any
+      if (parentNode instanceof HTMLElement && parentNode.className) {
+        const classNames = parentNode.className.split(" ")
+        existingClasses = classNames.filter((cls) => cls.startsWith("ansi-"))
+      }
+
+      // Create new span with the selected text
       const span = document.createElement("span")
       span.innerText = selectedText
-      span.className = `ansi-${ansiCode} ${ansiClasses[ansiCode] || ""}`
+
+      // Determine what type of style we're applying
+      const isStyle = ansiCode === "1" || ansiCode === "4"
+      const isFgColor = Number.parseInt(ansiCode) >= 30 && Number.parseInt(ansiCode) < 40
+      const isBgColor = Number.parseInt(ansiCode) >= 40
+
+      // Filter out existing classes that would conflict with the new one
+      const preservedClasses = existingClasses.filter((cls) => {
+        const code = cls.split("-")[1]
+        if (isStyle) return !(code === "1" || code === "4")
+        if (isFgColor) return !(Number.parseInt(code) >= 30 && Number.parseInt(code) < 40)
+        if (isBgColor) return !(Number.parseInt(code) >= 40)
+        return true
+      })
+
+      // Add the new class
+      const newClass = `ansi-${ansiCode}`
+      const allClasses = [...preservedClasses, newClass]
+
+      // Set all classes and corresponding Tailwind classes
+      span.className = allClasses
+        .map((cls) => {
+          const code = cls.split("-")[1]
+          return `${cls} ${ansiClasses[code] || ""}`
+        })
+        .join(" ")
 
       range.deleteContents()
       range.insertNode(span)
@@ -217,6 +258,8 @@ export default function DiscordTextGenerator() {
           Rebane&apos;s Discord <span className="text-[#5865F2]">Colored</span> Text Generator
         </Title>
 
+         
+
         <Title order={2} className="text-center mb-4">
           Create your text
         </Title>
@@ -250,7 +293,7 @@ export default function DiscordTextGenerator() {
               <Tooltip key={code} label={tooltipTexts[code.toString()]} position="top">
                 <Button
                   variant="filled"
-                  className={`w-8 h-8 p-0 ${ansiClasses[code.toString()].replace("text-", "bg-")}`}
+                  className={`w-8 h-8 p-0 ${ansiClasses[code.toString()]}`}
                   onClick={() => applyStyle(code.toString())}
                 />
               </Tooltip>
@@ -299,6 +342,10 @@ export default function DiscordTextGenerator() {
             {copyMessage}
           </Button>
         </Stack>
+
+        <Text size="xs" className="text-center mt-8">
+          This is an unofficial tool, it is not made or endorsed by Discord.
+        </Text>
       </Container>
     </Box>
   )
