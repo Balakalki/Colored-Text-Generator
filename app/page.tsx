@@ -357,9 +357,7 @@ export default function DiscordTextGenerator() {
           </Button>
         </Stack>
 
-        <Text size="xs" className="text-center mt-8">
-          This is an unofficial tool, it is not made or endorsed by Discord.
-        </Text>
+       
       </Container>
     </Box>
   )
