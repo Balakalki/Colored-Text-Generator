@@ -4,8 +4,9 @@ import { useState, useRef, useEffect } from "react"
 import { Button, Container, Title, Text, Group, Tooltip, Box, Paper, Stack, Anchor } from "@mantine/core"
 import { useClipboard } from "@mantine/hooks"
 
+
 // ANSI color classes
-const ansiClasses = {
+const ansiClasses: Record<string, string> = {
   // Styles
   "1": "font-bold",
   "4": "underline",
@@ -27,6 +28,7 @@ const ansiClasses = {
   "45": "bg-[#6c71c4]",
   "46": "bg-[#93a1a1]",
   "47": "bg-[#fdf6e3]",
+  
 }
 
 // Color tooltips
@@ -264,8 +266,8 @@ export default function DiscordTextGenerator() {
           Create your text
         </Title>
 
-        <Stack align="center" spacing="md">
-          <Group spacing="xs">
+        <Stack align="center" >
+          <Group >
             <Button variant="filled" className="bg-[#4f545c] hover:bg-[#5d6269]" onClick={() => applyStyle("0")}>
               Reset All
             </Button>
@@ -285,23 +287,23 @@ export default function DiscordTextGenerator() {
             </Button>
           </Group>
 
-          <Group spacing="xs" align="center">
-            <Text weight={700} className="mr-2">
+          <Group  align="center">
+            <Text  className="mr-2">
               FG
             </Text>
             {[30, 31, 32, 33, 34, 35, 36, 37].map((code) => (
               <Tooltip key={code} label={tooltipTexts[code.toString()]} position="top">
                 <Button
                   variant="filled"
-                  className={`w-8 h-8 p-0 ${ansiClasses[code.toString()]}`}
+                  className={`w-8 h-8 p-0 ${ansiClasses[code.toString()].replaceAll('text-', 'bg-')}`}
                   onClick={() => applyStyle(code.toString())}
                 />
               </Tooltip>
             ))}
           </Group>
 
-          <Group spacing="xs" align="center">
-            <Text weight={700} className="mr-2">
+          <Group  align="center">
+            <Text  className="mr-2">
               BG
             </Text>
             {[40, 41, 42, 43, 44, 45, 46, 47].map((code) => (
