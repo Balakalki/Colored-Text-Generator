@@ -3,6 +3,7 @@ import "@mantine/core/styles.css"
 import "./globals.css"
 import { MantineProvider, ColorSchemeScript } from "@mantine/core"
 import type { Metadata } from "next"
+import { Analytics } from "@vercel/analytics/react
 
 export const metadata: Metadata = {
   title: "Rebane's Discord Colored Text Generator",
