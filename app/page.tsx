@@ -68,8 +68,11 @@ export default function DiscordTextGenerator() {
   const [copyMessage, setCopyMessage] = useState("Copy text as Discord formatted")
   const [copyCount, setCopyCount] = useState(0)
 
-  // Replace the applyStyle function with this improved version that preserves existing styles
+ 
+
   const applyStyle = (ansiCode: string) => {
+    if (typeof window === "undefined" || !textareaRef.current) return; // Prevent SSR execution
+  
     if (!textareaRef.current) return
 
     const selection = window.getSelection()
