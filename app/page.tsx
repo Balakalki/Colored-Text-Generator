@@ -30,7 +30,16 @@ const ansiClasses: Record<string, string> = {
   "47": "bg-[#fdf6e3]",
   
 }
-
+const bgForFG: Record<string, string> = {
+  "30": "bg-[#4f545c]",
+  "31": "bg-[#dc322f]",
+  "32": "bg-[#859900]",
+  "33": "bg-[#b58900]",
+  "34": "bg-[#268bd2]",
+  "35": "bg-[#d33682]",
+  "36": "bg-[#2aa198]",
+  "37": "bg-[#ffffff]",
+}
 // Color tooltips
 const tooltipTexts: Record<string, string> = {
   // FG
@@ -295,7 +304,7 @@ export default function DiscordTextGenerator() {
               <Tooltip key={code} label={tooltipTexts[code.toString()]} position="top">
                 <Button
                   variant="filled"
-                  className={`w-8 h-8 p-0 ${ansiClasses[code.toString()].replaceAll('text-', 'bg-')}`}
+                  className={`w-8 h-8 p-0 ${bgForFG[code.toString()].replace("text-", "bg-")}`}
                   onClick={() => applyStyle(code.toString())}
                 />
               </Tooltip>
@@ -345,6 +354,9 @@ export default function DiscordTextGenerator() {
           </Button>
         </Stack>
 
+        <Text size="xs" className="text-center mt-8">
+          This is an unofficial tool, it is not made or endorsed by Discord.
+        </Text>
       </Container>
     </Box>
   )
